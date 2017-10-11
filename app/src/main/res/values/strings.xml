@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AppBase</string>
+    <string name="app_name">Hustlr</string>
 
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
@@ -15,5 +15,5 @@
 
     <string name="action_settings">Settings</string>
 
-    <string name="facebook_app_id">Your facebook app id</string>
+    <string name="facebook_app_id">182204179009822</string>
 </resources>

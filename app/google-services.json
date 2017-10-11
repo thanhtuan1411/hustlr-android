@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1035984378496",
+    "project_id": "default-demo-app-c12a1"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1035984378496:android:88d21464220f0281",
+        "android_client_info": {
+          "package_name": "bscorp.appbase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1035984378496-crgnaht46lrqjdt66g1ts4lko7cuqg7f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bscorp.appbase",
+            "certificate_hash": "6fd1fd7649f2d0855b86fb83931bf93938a7fde3"
+          }
+        },
+        {
+          "client_id": "1035984378496-caj1ktf2u94hsgmakq8sbqkq4220fmuo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_j1WigzigQFgURBVcU_2TRC_aQVYf14I"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

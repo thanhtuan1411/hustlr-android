@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AppBase</string>
+    <string name="app_name">Hustlr</string>
 
     <string name="permission_rationale">"É necessária uma permissão de acesso aos contatos para auto-completar
         o campo email."
