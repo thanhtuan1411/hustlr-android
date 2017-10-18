@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,6 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +57,7 @@ import java.util.List;
 
 import today.hustlr.login.R;
 import utils.Constants;
+import utils.HustlrAPI;
 import utils.ValidateUserInfo;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -218,14 +221,14 @@ public class LoginActivity extends AppCompatActivity implements
             return true;
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-//            Snackbar.make((LinearLayout)findViewById(R.id.ll_main), R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-//                    .setAction(android.R.string.ok, new View.OnClickListener() {
-//                        @Override
-//                        @TargetApi(Build.VERSION_CODES.M)
-//                        public void onClick(View v) {
-//                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-//                        }
-//                    }).show();
+            Snackbar.make((LinearLayout)findViewById(R.id.ll_main), R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        @TargetApi(Build.VERSION_CODES.M)
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+                        }
+                    }).show();
         } else {
             requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
         }
@@ -524,7 +527,13 @@ public class LoginActivity extends AppCompatActivity implements
 
             try {
                 // Simulate network access.
-                Thread.sleep(2000);
+                Thread.sleep(500);
+                HustlrAPI.getResponseFromJsonURL("https://192.168.99.121:1443/");
+
+//                HustlrAPI.getResponseFromJsonURL("https://www.avizia.com");
+
+                //Connect to backend
+
             } catch (InterruptedException e) {
                 return false;
             }
