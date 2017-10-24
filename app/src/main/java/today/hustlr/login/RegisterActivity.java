@@ -21,7 +21,7 @@ import utils.ValidateUserInfo;
  * Created by AndreBTS on 20/08/2015.
  */
 public class RegisterActivity extends Activity implements View.OnClickListener{
-    EditText edit_nome, edit_email, edit_password;
+    EditText edit_first_name, edit_last_name, edit_email, edit_password;
     TextView txt_alreadyHave;
     Button btn_registrar;
     private CreateUserTask mCreateTask = null;
@@ -39,7 +39,8 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
             email = savedInstanceState.getString(Constants.TAG_EMAIL);
         }
 
-        edit_nome = (EditText) findViewById(R.id.edit_nome);
+        edit_first_name = (EditText) findViewById(R.id.edit_first_name);
+        edit_last_name = (EditText) findViewById(R.id.edit_last_name);
         edit_email = (EditText) findViewById(R.id.edit_email);
         edit_email.setText(email);
         edit_password = (EditText) findViewById(R.id.edit_password);
@@ -59,7 +60,8 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
      */
     public void attemptCreate() {
         // Store values at the time of the login attempt.
-        String name = edit_nome.getText().toString();
+        String first_name = edit_first_name.getText().toString();
+        String last_name = edit_last_name.getText().toString();
         String email = edit_email.getText().toString();
         String password = edit_password.getText().toString();
 
@@ -69,9 +71,13 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
         ValidateUserInfo validate = new ValidateUserInfo();
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(name)) {
-            edit_nome.setError(getString(R.string.error_field_required));
-            focusView = edit_nome;
+        if (TextUtils.isEmpty(first_name)) {
+            edit_first_name.setError(getString(R.string.error_field_required));
+            focusView = edit_first_name;
+            cancel = true;
+        } else if (TextUtils.isEmpty(last_name)) {
+            edit_last_name.setError(getString(R.string.error_field_required));
+            focusView = edit_last_name;
             cancel = true;
         } else if (TextUtils.isEmpty(email)) {
             edit_email.setError(getString(R.string.error_field_required));
@@ -99,7 +105,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
             //TODO Create account logic
             // Show a progress spinner, and kick off a background task to
             // perform the user registration attempt.
-            mCreateTask = new CreateUserTask(name, email, password);
+            mCreateTask = new CreateUserTask(first_name, last_name, email, password);
             mCreateTask.execute((Void) null);
         }
     }
@@ -122,12 +128,12 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
      * the user.
      */
     public class CreateUserTask extends AsyncTask<Void, Void, Boolean> {
-        private final String mName;
+        private final String mFirstName;
         private final String mEmail;
         private final String mPassword;
 
-        CreateUserTask(String name, String email, String password) {
-            mName = name;
+        CreateUserTask(String first_name, String last_name, String email, String password) {
+            mFirstName = first_name;
             mEmail = email;
             mPassword = password;
         }

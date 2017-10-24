@@ -3,5 +3,8 @@
     <!-- Strings related to create account -->
     <string name="already_registered">Already have an account? Sign in</string>
     <string name="prompt_name">Name</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="phone_number">Phone Number</string>
     <string name="action_register">Register</string>
 </resources>

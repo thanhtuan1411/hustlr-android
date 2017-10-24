@@ -58,6 +58,7 @@ import java.util.List;
 import today.hustlr.login.R;
 import utils.Constants;
 import utils.HustlrAPI;
+import utils.StringUtils;
 import utils.ValidateUserInfo;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -525,18 +526,31 @@ public class LoginActivity extends AppCompatActivity implements
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
+            //337130627a1416e0a6bde0174c2d603bf599755d198b1830835f6ec3f2ced5c3
+
             try {
-                // Simulate network access.
-                Thread.sleep(500);
-                HustlrAPI.getResponseFromJsonURL("https://192.168.99.121:1443/");
+                String tt = StringUtils.hashMac("test","263dbbca-0fbc-4fb2-b8bf-a9d751983052");
+                String s = tt;
+            } catch (Exception ex) {
 
-//                HustlrAPI.getResponseFromJsonURL("https://www.avizia.com");
-
-                //Connect to backend
-
-            } catch (InterruptedException e) {
-                return false;
             }
+
+            HustlrAPI.addUser();
+
+
+
+//            try {
+//                // Simulate network access.
+//                Thread.sleep(500);
+//                HustlrAPI.getResponseFromJsonURL("https://192.168.99.100:1443/");
+//
+////                HustlrAPI.getResponseFromJsonURL("https://www.avizia.com");
+//
+//                //Connect to backend
+//
+//            } catch (InterruptedException e) {
+//                return false;
+//            }
 
             for (String credential : DUMMY_CREDENTIALS) {
                 String[] pieces = credential.split(":");
