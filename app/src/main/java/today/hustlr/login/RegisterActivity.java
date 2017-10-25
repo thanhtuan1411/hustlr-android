@@ -12,14 +12,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import today.hustlr.login.R;
 import utils.CheckNetwork;
 import utils.Constants;
 import utils.ValidateUserInfo;
+import today.hustlr.api.entity.User;
 
-/**
- * Created by AndreBTS on 20/08/2015.
- */
 public class RegisterActivity extends Activity implements View.OnClickListener{
     EditText edit_first_name, edit_last_name, edit_email, edit_password;
     TextView txt_alreadyHave;
@@ -105,7 +102,13 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
             //TODO Create account logic
             // Show a progress spinner, and kick off a background task to
             // perform the user registration attempt.
-            mCreateTask = new CreateUserTask(first_name, last_name, email, password);
+            User user = new User();
+            user.first_name = first_name;
+            user.last_name = last_name;
+            user.email = email;
+            user.password = password;
+
+            mCreateTask = new CreateUserTask(user);
             mCreateTask.execute((Void) null);
         }
     }
@@ -128,14 +131,10 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
      * the user.
      */
     public class CreateUserTask extends AsyncTask<Void, Void, Boolean> {
-        private final String mFirstName;
-        private final String mEmail;
-        private final String mPassword;
+        private final User user;
 
-        CreateUserTask(String first_name, String last_name, String email, String password) {
-            mFirstName = first_name;
-            mEmail = email;
-            mPassword = password;
+        CreateUserTask(User user) {
+           this.user = user;
         }
 
         @Override
