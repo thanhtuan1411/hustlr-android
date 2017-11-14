@@ -11,14 +11,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import utils.CheckNetwork;
 import utils.Constants;
+import utils.HustlrAPI;
 import utils.ValidateUserInfo;
 import today.hustlr.api.entity.User;
 
 public class RegisterActivity extends Activity implements View.OnClickListener{
-    EditText edit_first_name, edit_last_name, edit_email, edit_password;
+    EditText edit_first_name, edit_last_name, edit_email, edit_password, edit_phone;
     TextView txt_alreadyHave;
     Button btn_registrar;
     private CreateUserTask mCreateTask = null;
@@ -41,10 +41,11 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
         edit_email = (EditText) findViewById(R.id.edit_email);
         edit_email.setText(email);
         edit_password = (EditText) findViewById(R.id.edit_password);
+        edit_phone = (EditText) findViewById(R.id.edit_phone);
         txt_alreadyHave = (TextView) findViewById(R.id.txt_already_have);
         txt_alreadyHave.setOnClickListener(this);
 
-        btn_registrar = (Button) findViewById(R.id.btn_register);
+        btn_registrar = (Button) findViewById(R.id.btn_verify);
         btn_registrar.setOnClickListener(this);
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -61,6 +62,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
         String last_name = edit_last_name.getText().toString();
         String email = edit_email.getText().toString();
         String password = edit_password.getText().toString();
+        String cell_phone = edit_phone.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -76,7 +78,12 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
             edit_last_name.setError(getString(R.string.error_field_required));
             focusView = edit_last_name;
             cancel = true;
-        } else if (TextUtils.isEmpty(email)) {
+        } else if (TextUtils.isEmpty(cell_phone)) {
+            edit_phone.setError(getString(R.string.error_field_required));
+            focusView = edit_phone;
+            cancel = true;
+        }
+        else if (TextUtils.isEmpty(email)) {
             edit_email.setError(getString(R.string.error_field_required));
             focusView = edit_email;
             cancel = true;
@@ -107,6 +114,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
             user.last_name = last_name;
             user.email = email;
             user.password = password;
+            user.cell_phone = cell_phone;
 
             mCreateTask = new CreateUserTask(user);
             mCreateTask.execute((Void) null);
@@ -116,7 +124,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_register:
+            case R.id.btn_verify:
                 attemptCreate();
                 break;
             case R.id.txt_already_have:
@@ -143,12 +151,18 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
 
             try {
                 // Simulate network access.
-                Thread.sleep(2000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 return false;
             }
 
+
             // TODO: if there's no account registered, register the new account here.
+
+//            TelephonyManager tMgr = (TelephonyManager)getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+//            user.cell_phone = tMgr.getLine1Number();
+            HustlrAPI.addUser(user);
+
             return true;
         }
 
@@ -161,6 +175,13 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
             } else {
                 Toast.makeText(RegisterActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
             }
+
+            Intent intent = new Intent(RegisterActivity.this, VerificationActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("email",this.user.email);
+            intent.putExtras(bundle);
+            startActivity(intent);
+            finish();
         }
 
         @Override

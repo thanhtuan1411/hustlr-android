@@ -524,44 +524,8 @@ public class LoginActivity extends AppCompatActivity implements
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
 
-            //337130627a1416e0a6bde0174c2d603bf599755d198b1830835f6ec3f2ced5c3
-
-            try {
-                String tt = StringUtils.hashMac("test","263dbbca-0fbc-4fb2-b8bf-a9d751983052");
-                String s = tt;
-            } catch (Exception ex) {
-
-            }
-
-            HustlrAPI.addUser();
-
-
-
-//            try {
-//                // Simulate network access.
-//                Thread.sleep(500);
-//                HustlrAPI.getResponseFromJsonURL("https://192.168.99.100:1443/");
-//
-////                HustlrAPI.getResponseFromJsonURL("https://www.avizia.com");
-//
-//                //Connect to backend
-//
-//            } catch (InterruptedException e) {
-//                return false;
-//            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
+            return HustlrAPI.login(mEmail, mPassword,"");
         }
 
         @Override

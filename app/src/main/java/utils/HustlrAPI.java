@@ -4,19 +4,13 @@ import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSession;
+import today.hustlr.api.entity.User;
 
 /**
  * Created by tuando on 10/11/17.
@@ -25,12 +19,15 @@ import javax.net.ssl.SSLSession;
 
 public class HustlrAPI {
 
-    private static String rootApiUrl = "https://192.168.99.100:1443";
+//    private static String rootApiUrl = "https://192.168.99.100:1443";
+    private static String rootApiUrl = "https://mobile-api-dev.hustlrtech.com";
+    private static String host = "mobile-api-dev.hustlrtech.com";
     private static String hmacSecret = "263dbbca-0fbc-4fb2-b8bf-a9d751983052";
     private static String signUp = "/v1/devices/user/sign_up";
     private static String saveUser = "/v1/devices/user/save_user";
     private static String logIn = "/v1/devices/user/login";
     private static String getUserByEmail = "/v1/devices/user/get_user_by_email";
+    private static String verifyCode = "/v1/devices/user/verify_code";
     private static String apiKey = "mobile_device";
 
 
@@ -54,38 +51,83 @@ public class HustlrAPI {
 
     }
 
-    public static String addUser() {
-
+    public static boolean login(String email, String password, String phone) {
         try {
             JSONObject obj = new JSONObject();
-            obj.put("user_id","");
-            obj.put("email","user1@yopmail.com");
-            obj.put("password","Hustlr2017");
-            obj.put("user_id","");
-            obj.put("first_name", "User 1");
-            obj.put("last_name","Last");
-            obj.put("street","3904 Railroad Ave");
-            obj.put("city","Fairfax");
-            obj.put("region","VA");
-            obj.put("postal_code","22030");
-            obj.put("cell_phone","7036466862");
-            return getResponseFromJsonURL(rootApiUrl + signUp, obj.toString());
-        } catch (JSONException ex) {
-            return null;
+            obj.put("email", email);
+            obj.put("password", password);
+
+
+
+            String result = getResponseFromAPI(rootApiUrl + logIn, obj.toString());
+
+            try {
+
+                JSONObject result_obj = new JSONObject(result);
+
+                if (result_obj.getBoolean("success")) {
+                    return true;
+                }
+
+            } catch (Throwable t) {
+
+                return false;
+            }
+        } catch (JSONException e) {
+            Log.e("TAG",e.toString());
+
         }
 
+        return false;
 
     }
 
-
-    public static String getResponseFromJsonURL(String urlStr, String requestBody) {
+    public static String addUser(User user) {
         try {
-            HostnameVerifier hostnameVerifier = new HostnameVerifier() {
-                @Override
-                public boolean verify(String hostname, SSLSession session) {
+            JSONObject obj = new JSONObject();
+            obj.put("email",user.email);
+            obj.put("password",user.password);
+            obj.put("first_name", user.first_name);
+            obj.put("last_name",user.last_name);
+            obj.put("street",user.street);
+            obj.put("street2",user.street2);
+            obj.put("city", user.city);
+            obj.put("region",user.region);
+            obj.put("postal_code",user.postal_code);
+            obj.put("cell_phone",user.cell_phone);
+            return getResponseFromAPI(rootApiUrl + signUp, obj.toString());
+        } catch (JSONException ex) {
+            return null;
+        }
+    }
+
+    public static boolean verifyCode(String code, String email) {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("code",code);
+            obj.put("email",email);
+            String result = getResponseFromAPI(rootApiUrl + verifyCode, obj.toString());
+
+            try {
+
+                JSONObject result_obj = new JSONObject(result);
+
+                if (result_obj.getBoolean("success")) {
                     return true;
                 }
-            };
+
+            } catch (Throwable t) {
+                return false;
+            }
+        } catch (JSONException ex) {
+            return false;
+        }
+        return false;
+    }
+
+
+    public static String getResponseFromAPI(String urlStr, String requestBody) {
+        try {
 
             StringBuffer jsonString = new StringBuffer();
 
@@ -97,9 +139,8 @@ public class HustlrAPI {
                 HttpsURLConnection urlConnection = (HttpsURLConnection)url.openConnection();
                 urlConnection.setRequestProperty("Content-Type", "application/json");
                 urlConnection.setRequestMethod("POST");
-                urlConnection.setHostnameVerifier(hostnameVerifier);
                 urlConnection.setRequestProperty("Authorization", header);
-                urlConnection.setRequestProperty("Host", "192.168.99.100");
+                urlConnection.setRequestProperty("Host", host);
 
                 OutputStreamWriter out = new   OutputStreamWriter(urlConnection.getOutputStream());
                 out.write(requestBody);
@@ -121,15 +162,6 @@ public class HustlrAPI {
                     System.out.println(urlConnection.getResponseMessage());
                 }
 
-//                inStream = urlConnection.getInputStream();
-//                BufferedReader br = new BufferedReader(new InputStreamReader(inStream));
-//                jsonString = new StringBuffer();
-//
-//                String line;
-//                while ((line = br.readLine()) != null) {
-//                    jsonString.append(line);
-//                }
-//                br.close();
             } catch (Exception e) {
 
                 Log.e("TAG",e.toString());

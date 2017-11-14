@@ -2,14 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item android:id="@+id/nav_camara" android:icon="@android:drawable/ic_menu_camera"
-            android:title="Import" />
+        <item android:id="@+id/nav_profile" android:icon="@android:drawable/ic_menu_camera"
+            android:title="Profile" />
         <item android:id="@+id/nav_gallery" android:icon="@android:drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:title="Job Seeker Profile" />
         <item android:id="@+id/nav_slideshow" android:icon="@android:drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item android:id="@+id/nav_manage" android:icon="@android:drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:title="Create New Job" />
+        <item android:id="@+id/nav_job_created_by_you" android:icon="@android:drawable/ic_menu_manage"
+            android:title="Job Created by You" />
+        <item android:id="@+id/nav_job_completed_by_you" android:icon="@android:drawable/ic_menu_manage"
+            android:title="Job Completed by You" />
+        <item android:id="@+id/nav_settings" android:icon="@android:drawable/ic_menu_manage"
+            android:title="Settings" />
     </group>
 
     <item android:title="Communicate">
