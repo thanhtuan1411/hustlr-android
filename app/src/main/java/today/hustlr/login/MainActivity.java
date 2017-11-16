@@ -87,15 +87,15 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
             startActivity(intent);
 
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_seeker) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_new_job) {
+
+        } else if (id == R.id.nav_job_created_by_you) {
 
         } else if (id == R.id.nav_job_completed_by_you) {
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_settings) {
 
         }
 

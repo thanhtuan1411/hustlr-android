@@ -4,9 +4,9 @@
     <group android:checkableBehavior="single">
         <item android:id="@+id/nav_profile" android:icon="@android:drawable/ic_menu_camera"
             android:title="Profile" />
-        <item android:id="@+id/nav_gallery" android:icon="@android:drawable/ic_menu_gallery"
+        <item android:id="@+id/nav_seeker" android:icon="@android:drawable/ic_menu_gallery"
             android:title="Job Seeker Profile" />
-        <item android:id="@+id/nav_slideshow" android:icon="@android:drawable/ic_menu_slideshow"
+        <item android:id="@+id/nav_new_job" android:icon="@android:drawable/ic_menu_slideshow"
             android:title="Create New Job" />
         <item android:id="@+id/nav_job_created_by_you" android:icon="@android:drawable/ic_menu_manage"
             android:title="Job Created by You" />

@@ -9,17 +9,16 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 import utils.CheckNetwork;
 import utils.HustlrAPI;
 import utils.ValidateUserInfo;
+import today.hustlr.api.entity.User;
 
+public class ProfileActivity extends Activity implements View.OnClickListener {
+    EditText edit_first_name, edit_last_name, edit_email, edit_phone, edit_address, edit_city, edit_region, edit_postalcode;
 
-public class ProfileActivity extends Activity implements View.OnClickListener{
-    EditText edit_code;
-    TextView txt_alreadyHave;
-    Button btn_verify;
+    Button btn_update;
     private CreateUserTask mCreateTask = null;
 
     @Override
@@ -29,11 +28,18 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
 
         String verification_code;
 
-        edit_code = (EditText) findViewById(R.id.edit_code);
-        txt_alreadyHave = (TextView) findViewById(R.id.txt_already_have);
-        txt_alreadyHave.setOnClickListener(this);
-        btn_verify = (Button) findViewById(R.id.btn_verify);
-        btn_verify.setOnClickListener(this);
+        edit_first_name = (EditText) findViewById(R.id.edit_first_name);
+        edit_last_name = (EditText) findViewById(R.id.edit_last_name);
+        edit_email = (EditText) findViewById(R.id.edit_email);
+        edit_phone = (EditText) findViewById(R.id.edit_phone);
+        edit_address = (EditText) findViewById(R.id.edit_address);
+        edit_city = (EditText) findViewById(R.id.edit_city);
+        edit_region = (EditText) findViewById(R.id.edit_region);
+        edit_postalcode = (EditText) findViewById(R.id.edit_postalcode);
+
+
+        btn_update = (Button) findViewById(R.id.btn_verify);
+        btn_update.setOnClickListener(this);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
@@ -42,15 +48,16 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    public void attemptVerify() {
+    public void attemptUpdate() {
         // Store values at the time of the login attempt.
-        String verify_code = edit_code.getText().toString();
-        String email = "";
-        Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        if (!bundle.isEmpty()) {
-            email = bundle.getString("email");
-        }
+        String first_name = edit_first_name.getText().toString();
+        String last_name = edit_last_name.getText().toString();
+        String email = edit_email.getText().toString();
+        String phone = edit_phone.getText().toString();
+        String address = edit_address.getText().toString();
+        String city = edit_city.getText().toString();
+        String region = edit_region.getText().toString();
+        String postal_code = edit_postalcode.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -58,9 +65,15 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
         ValidateUserInfo validate = new ValidateUserInfo();
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(verify_code)) {
-            edit_code.setError(getString(R.string.error_field_required));
-            focusView = edit_code;
+        if (TextUtils.isEmpty(email)) {
+            edit_email.setError(getString(R.string.error_field_required));
+            focusView = edit_email;
+            cancel = true;
+        }
+
+        if (TextUtils.isEmpty(phone)) {
+            edit_phone.setError(getString(R.string.error_field_required));
+            focusView = edit_phone;
             cancel = true;
         }
 
@@ -73,7 +86,9 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
             // Show a progress spinner, and kick off a background task to
             // perform the user registration attempt.
 
-            mCreateTask = new CreateUserTask(verify_code, email);
+            User user = new User();
+
+            mCreateTask = new CreateUserTask(user);
             mCreateTask.execute((Void) null);
         }
     }
@@ -82,7 +97,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_verify:
-                attemptVerify();
+                attemptUpdate();
                 break;
             case R.id.txt_already_have:
                 startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
@@ -96,19 +111,16 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
      * the user.
      */
     public class CreateUserTask extends AsyncTask<Void, Void, Boolean> {
-        private final String verify_code;
-        private final String email;
+        private final User user;
 
-        CreateUserTask(String verify_code, String email) {
-            this.email = email;
-            this.verify_code = verify_code;
+
+        CreateUserTask(User user) {
+            this.user = user;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
-            return HustlrAPI.verifyCode(verify_code, email);
-
+            return HustlrAPI.saveUser(user);
         }
 
         @Override
