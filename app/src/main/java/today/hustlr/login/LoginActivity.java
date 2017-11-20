@@ -9,6 +9,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -55,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import today.hustlr.api.entity.User;
 import today.hustlr.login.R;
 import utils.Constants;
 import utils.HustlrAPI;
@@ -75,6 +77,7 @@ public class LoginActivity extends AppCompatActivity implements
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
+    private User loggedInUser;
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -534,6 +537,10 @@ public class LoginActivity extends AppCompatActivity implements
             showProgress(false);
 
             if (success) {
+                SharedPreferences userSetting = getSharedPreferences(Constants.USER_PREF, 0);
+                SharedPreferences.Editor editor = userSetting.edit();
+                editor.putString("UserId","");
+
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 finish();
             } else {

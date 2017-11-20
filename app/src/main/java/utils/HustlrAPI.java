@@ -1,5 +1,6 @@
 package utils;
 
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -26,8 +27,11 @@ import today.hustlr.api.entity.User;
 public class HustlrAPI {
 
     private static String rootApiUrl = "https://192.168.99.100:1443";
+//    private static String rootApiUrl = "https://mobile-api-local.hustlrtech.com:1443";
+    private static String host = "192.168.99.100";
 //    private static String rootApiUrl = "https://mobile-api-dev.hustlrtech.com";
-    private static String host = "mobile-api-dev.hustlrtech.com";
+
+
     private static String hmacSecret = "263dbbca-0fbc-4fb2-b8bf-a9d751983052";
     private static String signUp = "/v1/devices/user/sign_up";
     private static String saveUser = "/v1/devices/user/save_user";
@@ -70,6 +74,24 @@ public class HustlrAPI {
             try {
 
                 JSONObject result_obj = new JSONObject(result);
+                //Get User Obj
+                Constants.loggedInUser = new User();
+                JSONObject user_obj = result_obj.getJSONObject("user");
+                Constants.loggedInUser.user_id = user_obj.getString("user_id");
+                Constants.loggedInUser.first_name = user_obj.getString("first_name");
+                Constants.loggedInUser.last_name = user_obj.getString("last_name");
+                Constants.loggedInUser.email = user_obj.getString("email");
+                Constants.loggedInUser.enabled = user_obj.getBoolean("enabled");
+                Constants.loggedInUser.title = user_obj.getString("title");
+                Constants.loggedInUser.date_of_birth = user_obj.getString("date_of_birth");
+                Constants.loggedInUser.gender = user_obj.getString("gender");
+                Constants.loggedInUser.street = user_obj.getString("street");
+                Constants.loggedInUser.streettwo = user_obj.getString("streettwo");
+                Constants.loggedInUser.postal_code = user_obj.getString("postal_code");
+                Constants.loggedInUser.city = user_obj.getString("city");
+                Constants.loggedInUser.region = user_obj.getString("country");
+                Constants.loggedInUser.cell_phone = user_obj.getString("cell_phone");
+                Constants.loggedInUser.status = user_obj.getString("status");
 
                 if (result_obj.getBoolean("success")) {
                     return true;
@@ -88,6 +110,34 @@ public class HustlrAPI {
 
     }
 
+    public static User getUserByEmail(String email) {
+        User user = new User();
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("email",email);
+        String result = getResponseFromAPI(rootApiUrl + getUserByEmail, obj.toString());
+
+            try {
+                JSONObject result_obj = new JSONObject(result);
+                user.email = result_obj.getString("email");
+                user.first_name = result_obj.getString("first_name");
+                user.last_name = result_obj.getString("last_name");
+                user.cell_phone = result_obj.getString("cell_phone");
+                user.street = result_obj.getString("street");
+                user.streettwo = result_obj.getString("streettwo");
+                user.city = result_obj.getString("city");
+                user.region = result_obj.getString("region");
+                user.status = result_obj.getString("status");
+                user.postal_code = result_obj.getString("postal_code");
+                return user;
+            } catch (Throwable t) {
+                return null;
+            }
+        } catch (JSONException ex) {
+            return null;
+        }
+    }
+
     public static String addUser(User user) {
         try {
             JSONObject obj = new JSONObject();
@@ -96,7 +146,7 @@ public class HustlrAPI {
             obj.put("first_name", user.first_name);
             obj.put("last_name",user.last_name);
             obj.put("street",user.street);
-            obj.put("street2",user.street2);
+            obj.put("streettwo",user.streettwo);
             obj.put("city", user.city);
             obj.put("region",user.region);
             obj.put("postal_code",user.postal_code);
@@ -117,7 +167,7 @@ public class HustlrAPI {
             obj.put("first_name", user.first_name);
             obj.put("last_name",user.last_name);
             obj.put("street",user.street);
-            obj.put("street2",user.street2);
+            obj.put("streettwo",user.streettwo);
             obj.put("city", user.city);
             obj.put("region",user.region);
             obj.put("postal_code",user.postal_code);
@@ -169,15 +219,8 @@ public class HustlrAPI {
 
     public static String getResponseFromAPI(String urlStr, String requestBody) {
         try {
-//            HostnameVerifier hostnameVerifier = new HostnameVerifier() {
-//                @Override
-//                public boolean verify(String hostname, SSLSession session) {
-//                    return true;
-//                }
-//            };
 
 //            urlStr = rootApiUrl + "/health";
-
 
             StringBuffer jsonString = new StringBuffer();
 
@@ -189,7 +232,18 @@ public class HustlrAPI {
                 HttpsURLConnection urlConnection = (HttpsURLConnection)url.openConnection();
                 urlConnection.setRequestProperty("Content-Type", "application/json");
                 urlConnection.setRequestMethod("POST");
-//                urlConnection.setHostnameVerifier(hostnameVerifier);
+
+                if (rootApiUrl.indexOf("192.168.99.100:1443") >= 0) {
+                    //Ignore SSL on local environment
+                    HostnameVerifier hostnameVerifier = new HostnameVerifier() {
+                        @Override
+                        public boolean verify(String hostname, SSLSession session) {
+                            return true;
+                        }
+                    };
+                    urlConnection.setHostnameVerifier(hostnameVerifier);
+                }
+
                 urlConnection.setRequestProperty("Authorization", header);
                 urlConnection.setRequestProperty("Host", host);
 

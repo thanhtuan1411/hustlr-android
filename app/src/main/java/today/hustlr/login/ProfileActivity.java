@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import utils.CheckNetwork;
+import utils.Constants;
 import utils.HustlrAPI;
 import utils.ValidateUserInfo;
 import today.hustlr.api.entity.User;
@@ -19,7 +20,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     EditText edit_first_name, edit_last_name, edit_email, edit_phone, edit_address, edit_city, edit_region, edit_postalcode;
 
     Button btn_update;
-    private CreateUserTask mCreateTask = null;
+    private UpdateUserTask mCreateTask = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,10 +38,22 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         edit_region = (EditText) findViewById(R.id.edit_region);
         edit_postalcode = (EditText) findViewById(R.id.edit_postalcode);
 
+        if (Constants.loggedInUser != null) {
+            String tt = Constants.loggedInUser.street;
+            edit_first_name.setText((Constants.loggedInUser.first_name == "null") ? "" : Constants.loggedInUser.first_name);
+            edit_last_name.setText(Constants.loggedInUser.last_name == "null" ? "" : Constants.loggedInUser.last_name);
+            edit_email.setText(Constants.loggedInUser.email == "null" ? "" : Constants.loggedInUser.email);
+            edit_phone.setText(Constants.loggedInUser.cell_phone == "null" ? "" : Constants.loggedInUser.cell_phone);
+            edit_address.setText(Constants.loggedInUser.street == "null" ? "" : Constants.loggedInUser.street);
+            edit_city.setText(Constants.loggedInUser.city == "null" ? "" : Constants.loggedInUser.city);
+            edit_region.setText(Constants.loggedInUser.region == "null" ? "" : Constants.loggedInUser.region);
+            edit_postalcode.setText(Constants.loggedInUser.postal_code == "null" ? "" : Constants.loggedInUser.postal_code);
+        }
 
-        btn_update = (Button) findViewById(R.id.btn_verify);
+        btn_update = (Button) findViewById(R.id.btn_update);
         btn_update.setOnClickListener(this);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
     }
 
     /**
@@ -48,16 +61,18 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
+
     public void attemptUpdate() {
         // Store values at the time of the login attempt.
-        String first_name = edit_first_name.getText().toString();
-        String last_name = edit_last_name.getText().toString();
-        String email = edit_email.getText().toString();
-        String phone = edit_phone.getText().toString();
-        String address = edit_address.getText().toString();
-        String city = edit_city.getText().toString();
-        String region = edit_region.getText().toString();
-        String postal_code = edit_postalcode.getText().toString();
+        User user = Constants.loggedInUser;
+        user.first_name = edit_first_name.getText().toString();
+        user.last_name = edit_last_name.getText().toString();
+        user.email = edit_email.getText().toString();
+        user.cell_phone = edit_phone.getText().toString();
+        user.street = edit_address.getText().toString();
+        user.city = edit_city.getText().toString();
+        user.region = edit_region.getText().toString();
+        user.postal_code = edit_postalcode.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -65,13 +80,13 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         ValidateUserInfo validate = new ValidateUserInfo();
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
+        if (TextUtils.isEmpty(user.email)) {
             edit_email.setError(getString(R.string.error_field_required));
             focusView = edit_email;
             cancel = true;
         }
 
-        if (TextUtils.isEmpty(phone)) {
+        if (TextUtils.isEmpty(user.cell_phone)) {
             edit_phone.setError(getString(R.string.error_field_required));
             focusView = edit_phone;
             cancel = true;
@@ -86,9 +101,9 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
             // Show a progress spinner, and kick off a background task to
             // perform the user registration attempt.
 
-            User user = new User();
 
-            mCreateTask = new CreateUserTask(user);
+
+            mCreateTask = new UpdateUserTask(user);
             mCreateTask.execute((Void) null);
         }
     }
@@ -96,7 +111,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_verify:
+            case R.id.btn_update:
                 attemptUpdate();
                 break;
             case R.id.txt_already_have:
@@ -110,11 +125,10 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class CreateUserTask extends AsyncTask<Void, Void, Boolean> {
+    public class UpdateUserTask extends AsyncTask<Void, Void, Boolean> {
         private final User user;
 
-
-        CreateUserTask(User user) {
+        UpdateUserTask(User user) {
             this.user = user;
         }
 
@@ -128,13 +142,9 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
             mCreateTask = null;
             CheckNetwork checkNetwork = new CheckNetwork();
             if (checkNetwork.isConnected(ProfileActivity.this) && success) {
-                Toast.makeText(ProfileActivity.this, "Account created", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileActivity.this, "Profile Updated", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(ProfileActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
-            }
-            if (success) {
-                startActivity(new Intent(ProfileActivity.this, MainActivity.class));
-                finish();
             }
         }
 

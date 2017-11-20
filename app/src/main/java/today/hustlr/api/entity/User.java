@@ -19,7 +19,7 @@ public class User {
     public String verification_code;
     public String gender;
     public String street;
-    public String street2;
+    public String streettwo;
     public String postal_code;
     public String city;
     public String region;
